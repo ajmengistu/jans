@@ -28,6 +28,7 @@ This part of the documentation focuses on step-by-step instructions for app cont
 
    install
    quickstart
+   cli
 
 API Reference
 =============
@@ -43,5 +44,4 @@ This part of the documentation lists the API reference of public classes and fun
    persistence
    wait
    meta
-   document
    utils

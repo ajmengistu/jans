@@ -36,7 +36,7 @@ copyright = '2020, Janssen'  # noqa: A001
 author = 'Janssen'
 
 # The full version, including alpha/beta/rc tags
-release = find_version("../jans/pycloudlib/__init__.py")
+release = find_version("../jans/pycloudlib/version.py")
 
 # -- General configuration ---------------------------------------------------
 
@@ -45,6 +45,7 @@ release = find_version("../jans/pycloudlib/__init__.py")
 # ones.
 extensions = [
     "sphinx.ext.autodoc",
+    "sphinx_click.ext",
 ]
 
 autodoc_mock_imports = [
@@ -56,6 +57,9 @@ autodoc_mock_imports = [
     "docker",
     "cryptography",
     "requests_toolbelt",
+    "google",
+    "sqlalchemy",
+    "deprecated",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -77,4 +81,4 @@ html_theme = 'nature'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+# html_static_path = ['_static']
