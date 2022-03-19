@@ -30,13 +30,6 @@ class BaseConfig:
         """
         raise NotImplementedError
 
-    def all(self) -> NoReturn:  # pragma: no cover
-        """Get all config (deprecated in favor of ``get_all``).
-
-        Subclass **MUST** implement this method.
-        """
-        return self.get_all()
-
     def set_all(self, data: dict) -> NoReturn:
         """Set all config.
 

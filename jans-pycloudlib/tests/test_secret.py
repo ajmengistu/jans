@@ -36,7 +36,6 @@ def test_secret_set_all(gsecret):
     assert "" in str(exc.value)
 
 
-
 # ============
 # vault secret
 # ============
@@ -162,7 +161,7 @@ def test_vault_secret_all(gvault_secret, monkeypatch):
         "hvac.Client.read",
         lambda cls, key: {"data": {"value": "bar"}},
     )
-    assert gvault_secret.all() == {"foo": "bar"}
+    assert gvault_secret.get_all() == {"foo": "bar"}
 
 
 def test_vault_secret_all_empty(gvault_secret, monkeypatch):
@@ -174,7 +173,7 @@ def test_vault_secret_all_empty(gvault_secret, monkeypatch):
         "hvac.Client.list",
         lambda cls, key: None,
     )
-    assert gvault_secret.all() == {}
+    assert gvault_secret.get_all() == {}
 
 
 def test_vault_secret_request_warning(gvault_secret, caplog):

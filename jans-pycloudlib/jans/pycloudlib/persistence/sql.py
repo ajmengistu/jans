@@ -28,6 +28,7 @@ def get_sql_password(manager) -> str:
     1. get from password file
     2. get from secrets
 
+    :param manager: An instance of :class:`~jans.pycloudlib.manager._Manager`.
     :returns: Plaintext password.
     """
     secret_name = "sql_password"
@@ -47,8 +48,14 @@ def get_sql_password(manager) -> str:
     return password
 
 
-class BaseClient:
+class BaseAdapter:
     """Base class for SQL client adapter.
+
+    .. versionadded:: 1.0.0b17
+
+    .. admonition:: Notice
+
+        ``BaseAdapter`` is previously known as ``BaseClient``. It is renamed for class visibility.
     """
 
     def __init__(self, manager):
@@ -247,8 +254,14 @@ class BaseClient:
         raise NotImplementedError
 
 
-class PostgresqlClient(BaseClient):
+class PostgresqlAdapter(BaseAdapter):
     """Class for PostgreSQL adapter.
+
+    .. versionadded:: 1.0.0b17
+
+    .. admonition:: Notice
+
+        ``PostgresqlAdapter`` is previously known as ``PostgresqlClient``. It is renamed for class visibility.
     """
 
     @property
@@ -304,8 +317,14 @@ class PostgresqlClient(BaseClient):
         return self.engine.scalar("SHOW server_version")
 
 
-class MysqlClient(BaseClient):
+class MysqlAdapter(BaseAdapter):
     """Class for MySQL adapter.
+
+    .. versionadded:: 1.0.0b17
+
+    .. admonition:: Notice
+
+        ``MysqlAdapter`` is previously known as ``MysqlClient``. It is renamed for class visibility.
     """
 
     @property
@@ -362,10 +381,15 @@ class MysqlClient(BaseClient):
 
 
 class SQLClient:
-    """This class interacts with SQL database.
+    """High-level class to interact with SQL database via adapter.
+
+    Supported adapters:
+
+    - :class:`~jans.pycloudlib.persistence.sql.MysqlAdapter`
+    - :class:`~jans.pycloudlib.persistence.sql.PostgresqlAdapter`
     """
 
-    #: Methods from adapter
+    #: Allowed methods from adapter; only these methods can be executed within this class.
     _allowed_adapter_methods = (
         "connected",
         "create_table",
@@ -384,9 +408,9 @@ class SQLClient:
         manager = manager or get_manager()
         dialect = os.environ.get("CN_SQL_DB_DIALECT", "mysql")
         if dialect in ("pgsql", "postgresql"):
-            self.adapter = PostgresqlClient(manager)
+            self.adapter = PostgresqlAdapter(manager)
         elif dialect == "mysql":
-            self.adapter = MysqlClient(manager)
+            self.adapter = MysqlAdapter(manager)
 
         self._adapter_methods = [
             method for method in dir(self.adapter)
@@ -406,9 +430,9 @@ class SQLClient:
 def render_sql_properties(manager, src: str, dest: str) -> None:
     """Render file contains properties to connect to SQL database server.
 
-    :params manager: An instance of :class:`~jans.pycloudlib.manager._Manager`.
-    :params src: Absolute path to the template.
-    :params dest: Absolute path where generated file is located.
+    :param manager: An instance of :class:`~jans.pycloudlib.manager._Manager`.
+    :param src: Absolute path to the template.
+    :param dest: Absolute path where generated file is located.
     """
 
     with open(src) as f:
@@ -428,3 +452,27 @@ def render_sql_properties(manager, src: str, dest: str) -> None:
             "server_time_zone": os.environ.get("CN_SQL_DB_TIMEZONE", "UTC"),
         }
         f.write(rendered_txt)
+
+
+class BaseClient(BaseAdapter):
+    """An alias to :class:`~jans.pycloudlib.persistence.sql.BaseAdapter`.
+
+    .. deprecated:: 1.0.0b17
+    """
+    pass
+
+
+class MysqlClient(MysqlAdapter):
+    """An alias to :class:`~jans.pycloudlib.persistence.couchbase.MysqlAdapter`.
+
+    .. deprecated:: 1.0.0b17
+    """
+    pass
+
+
+class PostgresqlClient(PostgresqlAdapter):
+    """An alias to :class:`~jans.pycloudlib.persistence.sql.PostgresqlAdapter`
+
+    .. deprecated:: 1.0.0b17
+    """
+    pass

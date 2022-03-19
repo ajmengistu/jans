@@ -8,9 +8,6 @@ class GAdapter(object):
     def set(self, k, v):
         return "SET"
 
-    def all(self):
-        return {}
-
     def get_all(self):
         return {}
 
@@ -53,7 +50,7 @@ def test_config_manager_methods():
 
     assert manager.get("foo") == gadapter.get("foo")
     assert manager.set("foo", "bar") == gadapter.set("foo", "bar")
-    assert manager.all() == gadapter.all()
+    assert manager.get_all() == gadapter.get_all()
 
 
 def test_secret_manager_methods():
@@ -65,7 +62,7 @@ def test_secret_manager_methods():
 
     assert manager.get("foo") == gadapter.get("foo")
     assert manager.set("foo", "bar") == gadapter.set("foo", "bar")
-    assert manager.all() == gadapter.all()
+    assert manager.get_all() == gadapter.get_all()
 
 
 @pytest.mark.skip(reason="need to rewrite testcase")

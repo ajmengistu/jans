@@ -2,8 +2,7 @@
 jans.pycloudlib.config.google_config
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This module contains config adapter class to interact with
-Google Secret.
+This module contains config adapter class to interact with Google Secret.
 """
 
 import sys
@@ -40,13 +39,11 @@ class GoogleConfig(BaseConfig):
         # Create the Secret Manager client.
         self.client = secretmanager.SecretManagerServiceClient()
 
-    def all(self) -> dict:  # pragma: no cover
-        return self.get_all()
-
     def get_all(self) -> dict:
         """
         Access the payload for the given secret version if one exists. The version
         can be a version number as a string (e.g. "5") or an alias (e.g. "latest").
+
         :returns: A ``dict`` of key-value pairs (if any)
         """
         # Try to get the latest resource name. Used in initialization. If the latest version doesn't exist
@@ -79,8 +76,9 @@ class GoogleConfig(BaseConfig):
 
     def get(self, key, default: Any = "") -> Any:
         """Get value based on given key.
-        :params key: Key name.
-        :params default: Default value if key is not exist.
+
+        :param key: Key name.
+        :param default: Default value if key is not exist.
         :returns: Value based on given key or default one.
         """
         result = self.get_all()
@@ -89,9 +87,8 @@ class GoogleConfig(BaseConfig):
     def set(self, key: str, value: Any) -> bool:
         """Set key with given value.
 
-        :params key: Key name.
-        :params value: Value of the key.
-        :params data full dictionary to push. Used in initial creation of config and secret
+        :param key: Key name.
+        :param value: Value of the key.
         :returns: A ``bool`` to mark whether config is set or not.
         """
         all_ = self.get_all()
@@ -104,7 +101,8 @@ class GoogleConfig(BaseConfig):
 
     def set_all(self, data: dict) -> bool:
         """Push a full dictionary to secrets.
-        :params data full dictionary to push. Used in initial creation of config and secret
+
+        :param data: full dictionary to push. Used in initial creation of config and secret
         :returns: A ``bool`` to mark whether config is set or not.
         """
         all_ = {}
@@ -144,7 +142,8 @@ class GoogleConfig(BaseConfig):
     def add_secret_version(self, payload: str) -> bool:
         """
         Add a new secret version to the given secret with the provided payload.
-        :params payload:  payload
+
+        :param payload:  payload
         """
 
         # Build the resource name of the parent secret.

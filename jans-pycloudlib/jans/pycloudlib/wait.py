@@ -11,7 +11,6 @@ import os
 import sys
 
 import backoff
-import requests
 
 from jans.pycloudlib.persistence.couchbase import get_couchbase_user
 from jans.pycloudlib.persistence.couchbase import get_couchbase_password
@@ -35,7 +34,7 @@ def get_wait_max_time() -> int:
     """Get maximum time accepted by ``wait_for`` function.
 
     Default maximum time is 300 seconds. To change the value, pass
-    `CN_WAIT_MAX_TIME` environment variable.
+    ``CN_WAIT_MAX_TIME`` environment variable.
 
     .. code-block:: python
 
@@ -63,7 +62,7 @@ def get_wait_interval() -> int:
     """Get interval time between each execution of ``wait_for`` function.
 
     Default interval time is 10 seconds. To change the value, pass
-    `CN_WAIT_SLEEP_DURATION` environment variable.
+    ``CN_WAIT_SLEEP_DURATION`` environment variable.
 
     .. code-block:: python
 
@@ -272,59 +271,6 @@ def wait_for_couchbase_conn(manager, **kwargs):
 
 
 @retry_on_exception
-def wait_for_oxauth(manager, **kwargs):
-    """Wait for readiness/availability of oxAuth server.
-
-    This function makes a request to specific URL in oxAuth.
-
-    :param manager: An instance of :class:`~jans.pycloudlib.manager._Manager`.
-    """
-    addr = os.environ.get("CN_OXAUTH_BACKEND", "localhost:8081")
-    url = f"http://{addr}/oxauth/.well-known/openid-configuration"
-    req = requests.get(url)
-
-    if not req.ok:
-        raise WaitError(req.reason)
-
-
-@retry_on_exception
-def wait_for_oxtrust(manager, **kwargs):
-    """Wait for readiness/availability of oxTrust server.
-
-    This function makes a request to specific URL in oxTrust.
-
-    :param manager: An instance of :class:`~jans.pycloudlib.manager._Manager`.
-    """
-    addr = os.environ.get("CN_OXTRUST_BACKEND", "localhost:8082")
-    url = f"http://{addr}/identity/finishlogout.htm"
-    req = requests.get(url)
-
-    if not req.ok:
-        raise WaitError(req.reason)
-
-
-@retry_on_exception
-def wait_for_oxd(manager, **kwargs):
-    """Wait for readiness/availability of oxd server.
-
-    This function makes a request to specific URL in oxd.
-
-    :param manager: An instance of :class:`~jans.pycloudlib.manager._Manager`.
-    """
-    import urllib3
-
-    urllib3.disable_warnings()
-
-    addr = os.environ.get("CN_OXD_SERVER_URL", "localhost:8443")
-    verify = as_boolean(os.environ.get("CN_OXD_SERVER_VERIFY", False))
-    url = f"https://{addr}/health-check"
-    req = requests.get(url, verify=verify)
-
-    if not req.ok:
-        raise WaitError(req.reason)
-
-
-@retry_on_exception
 def wait_for_sql_conn(manager, **kwargs):
     """Wait for readiness/liveness of an SQL database connection.
     """
@@ -377,9 +323,6 @@ def wait_for(manager, deps=None):
     - `couchbase_conn`
     - `secret`
     - `secret_conn`
-    - `oxauth`
-    - `oxtrust`
-    - `oxd`
     - `sql`
     - `sql_conn`
     - `spanner`
@@ -416,9 +359,6 @@ def wait_for(manager, deps=None):
             "func": wait_for_secret,
             "kwargs": {"label": "Secret", "conn_only": True},
         },
-        "oxauth": {"func": wait_for_oxauth, "kwargs": {"label": "oxAuth"}},
-        "oxtrust": {"func": wait_for_oxtrust, "kwargs": {"label": "oxTrust"}},
-        "oxd": {"func": wait_for_oxd, "kwargs": {"label": "oxd"}},
         "sql_conn": {"func": wait_for_sql_conn, "kwargs": {"label": "SQL"}},
         "sql": {"func": wait_for_sql, "kwargs": {"label": "SQL"}},
         "spanner_conn": {"func": wait_for_spanner_conn, "kwargs": {"label": "Spanner"}},

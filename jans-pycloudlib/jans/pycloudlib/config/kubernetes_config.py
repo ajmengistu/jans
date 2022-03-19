@@ -50,11 +50,11 @@ class KubernetesConfig(BaseConfig):
     def get(self, key: str, default: Any = "") -> Any:
         """Get value based on given key.
 
-        :params key: Key name.
-        :params default: Default value if key is not exist.
+        :param key: Key name.
+        :param default: Default value if key is not exist.
         :returns: Value based on given key or default one.
         """
-        result = self.all()
+        result = self.get_all()
         return result.get(key) or default
 
     @property
@@ -101,8 +101,8 @@ class KubernetesConfig(BaseConfig):
     def set(self, key: str, value: Any) -> bool:
         """Set key with given value.
 
-        :params key: Key name.
-        :params value: Value of the key.
+        :param key: Key name.
+        :param value: Value of the key.
         :returns: A ``bool`` to mark whether config is set or not.
         """
         self._prepare_configmap()
@@ -118,13 +118,6 @@ class KubernetesConfig(BaseConfig):
             body=body,
         )
         return bool(ret)
-
-    def all(self) -> dict:  # pragma: no cover
-        """Get all key-value pairs.
-
-        :returns: A ``dict`` of key-value pairs (if any).
-        """
-        return self.get_all()
 
     def get_all(self) -> dict:
         """Get all key-value pairs.

@@ -231,9 +231,9 @@ def test_sync_couchbase_cert(monkeypatch, tmpdir):
 
 
 def test_exec_api_unsupported_method():
-    from jans.pycloudlib.persistence.couchbase import RestClient
+    from jans.pycloudlib.persistence.couchbase import RestApiClient
 
-    client = RestClient("localhost", "admin", "password")
+    client = RestApiClient("localhost", "admin", "password")
     with pytest.raises(ValueError):
         client.exec_api("pools/default/buckets", method="DELETE")
 
@@ -251,9 +251,9 @@ def test_no_couchbase_hosts(client_prop):
 
 
 def test_client_session_unverified():
-    from jans.pycloudlib.persistence.couchbase import BaseClient
+    from jans.pycloudlib.persistence.couchbase import BaseApiClient
 
-    client = BaseClient("localhost", "admin", "password")
+    client = BaseApiClient("localhost", "admin", "password")
     assert client.session.verify is False
 
 
@@ -262,12 +262,12 @@ def test_client_session_unverified():
     ("/etc/certs/custom-cb.crt", "/etc/certs/custom-cb.crt"),
 ])
 def test_client_session_verified(monkeypatch, given, expected):
-    from jans.pycloudlib.persistence.couchbase import BaseClient
+    from jans.pycloudlib.persistence.couchbase import BaseApiClient
 
     monkeypatch.setenv("CN_COUCHBASE_VERIFY", "true")
     monkeypatch.setenv("CN_COUCHBASE_CERT_FILE", given)
 
-    client = BaseClient("localhost", "admin", "password")
+    client = BaseApiClient("localhost", "admin", "password")
     assert client.session.verify == expected
 
 
@@ -276,11 +276,11 @@ def test_client_session_verified(monkeypatch, given, expected):
     ("127.0.0.1", "127.0.0.1"),
 ])
 def test_client_session_verified_host(monkeypatch, given, expected):
-    from jans.pycloudlib.persistence.couchbase import BaseClient
+    from jans.pycloudlib.persistence.couchbase import BaseApiClient
 
     monkeypatch.setenv("CN_COUCHBASE_VERIFY", "true")
     monkeypatch.setenv("CN_COUCHBASE_HOST_HEADER", given)
-    client = BaseClient("localhost", "admin", "password")
+    client = BaseApiClient("localhost", "admin", "password")
     assert client.session.headers["Host"] == expected
 
 
@@ -312,11 +312,11 @@ def test_n1ql_request_body_named_params():
     ("false", "http", 8091),
 ])
 def test_couchbase_rest_client_conn(monkeypatch, enable_ssl, scheme, port):
-    from jans.pycloudlib.persistence.couchbase import RestClient
+    from jans.pycloudlib.persistence.couchbase import RestApiClient
 
     monkeypatch.setenv("CN_COUCHBASE_TRUSTSTORE_ENABLE", enable_ssl)
 
-    client = RestClient("localhost", "admin", "password")
+    client = RestApiClient("localhost", "admin", "password")
     assert client.port == port
     assert client.scheme == scheme
 
@@ -326,11 +326,11 @@ def test_couchbase_rest_client_conn(monkeypatch, enable_ssl, scheme, port):
     ("false", "http", 8093),
 ])
 def test_couchbase_n1ql_client_conn(monkeypatch, enable_ssl, scheme, port):
-    from jans.pycloudlib.persistence.couchbase import N1qlClient
+    from jans.pycloudlib.persistence.couchbase import N1qlApiClient
 
     monkeypatch.setenv("CN_COUCHBASE_TRUSTSTORE_ENABLE", enable_ssl)
 
-    client = N1qlClient("localhost", "admin", "password")
+    client = N1qlApiClient("localhost", "admin", "password")
     assert client.port == port
     assert client.scheme == scheme
 

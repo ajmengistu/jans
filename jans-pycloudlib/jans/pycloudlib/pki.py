@@ -47,9 +47,9 @@ def generate_public_key(filename, private_key, is_ca=False, add_san=False, add_k
     :param is_ca: Whether add constraint extension as CA.
     :param add_san: Whether to add SubjectAlternativeName extension.
     :param add_key_usage: Whether to add KeyUsage extension.
-    :param kwargs: Optional arguments.
+    :param kwargs: Optional keyword arguments.
 
-    Keyword arguments:
+    Keyword arguments (``kwargs``):
 
     - ``email``: Email address for subject/issuer.
     - ``hostname``: Hostname (common name) for subject/issuer.
@@ -150,9 +150,9 @@ def generate_csr(filename, private_key, add_san=False, add_key_usage=False, **kw
     :param private_key: An instance of PrivateKey object.
     :param add_san: Whether to add SubjectAlternativeName extension.
     :param add_key_usage: Whether to add KeyUsage extension.
-    :param kwargs: Optional arguments.
+    :param kwargs: Optional keyword arguments.
 
-    Keyword arguments:
+    Keyword arguments (``kwargs``):
 
         - ``email``: Email address for subject/issuer.
         - ``hostname``: Hostname (common name) for subject/issuer.
@@ -237,6 +237,12 @@ def sign_csr(filename, csr, ca_private_key, ca_public_key, **kwargs):
     :param csr: An instance of CertificateSigningRequest object.
     :param ca_private_key: An instance of CA PrivateKey object.
     :param ca_public_key: An instance of CA Certificate object.
+    :param kwargs: Optional keyword arguments.
+
+    Keyword arguments (``kwargs``):
+
+    - ``valid_to``: Validity length in days.
+
     """
 
     valid_from = datetime.utcnow()

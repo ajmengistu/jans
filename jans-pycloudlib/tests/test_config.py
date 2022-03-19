@@ -25,7 +25,7 @@ def test_config_set(gconfig):
 
 def test_config_get_all(gconfig):
     with pytest.raises(NotImplementedError) as exc:
-        gconfig.all()
+        gconfig.get_all()
     assert "" in str(exc.value)
 
 
@@ -106,7 +106,7 @@ def test_consul_config_all(gconsul_config, monkeypatch):
             ],
         ),
     )
-    assert gconsul_config.all() == {"foo": "bar", "lorem": "ipsum"}
+    assert gconsul_config.get_all() == {"foo": "bar", "lorem": "ipsum"}
 
 
 def test_consul_config_all_empty(gconsul_config, monkeypatch):
@@ -114,7 +114,7 @@ def test_consul_config_all_empty(gconsul_config, monkeypatch):
         "consul.Consul.KV.get",
         lambda cls, k, recurse: (1, []),
     )
-    assert gconsul_config.all() == {}
+    assert gconsul_config.get_all() == {}
 
 
 def test_consul_config_request_warning(gconsul_config, caplog):

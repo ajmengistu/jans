@@ -12,7 +12,7 @@ from jans.pycloudlib import get_manager
 from jans.pycloudlib.utils import decode_text
 
 
-@click.command(help="Decode text from a file")
+@click.command()
 @click.argument(
     "path",
     type=click.Path(True, resolve_path=True, allow_dash=True),
@@ -27,6 +27,8 @@ from jans.pycloudlib.utils import decode_text
     help="Salt string (overrides salt from secrets/file)",
 )
 def decode_file(path, salt_file, salt_literal):
+    """Decode text from a file.
+    """
     salt = ""
     if salt_literal:
         salt = salt_literal
@@ -51,7 +53,7 @@ def decode_file(path, salt_file, salt_literal):
             raise click.ClickException(f"Unable to decode file {path}; reason={exc}")
 
 
-@click.command(help="Decode text string")
+@click.command()
 @click.argument("text")
 @click.option(
     "--salt-file",
@@ -63,6 +65,8 @@ def decode_file(path, salt_file, salt_literal):
     help="Salt string (overrides salt from secrets/file)",
 )
 def decode_string(text, salt_file, salt_literal):
+    """Decode text string
+    """
     salt = ""
     if salt_literal:
         salt = salt_literal

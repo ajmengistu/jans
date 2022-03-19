@@ -31,9 +31,9 @@ def _get_cb_password(manager, password_file, secret_name):
     1. get from password file (for backward-compat)
     2. get from secrets
 
-    :params manager: An instance of :class:`~jans.pycloudlib.manager._Manager`.
-    :params password_file: Path to file contains password.
-    :params secret_name: Name of the secrets to pull/push the password.
+    :param manager: An instance of :class:`~jans.pycloudlib.manager._Manager`.
+    :param password_file: Path to file contains password.
+    :param secret_name: Name of the secrets to pull/push the password.
     :returns: Plaintext password.
     """
 
@@ -55,7 +55,7 @@ def get_couchbase_user(manager=None) -> str:
     """Get Couchbase username from ``CN_COUCHBASE_USER``
     environment variable (default to ``admin``).
 
-    :params manager: A no-op argument, preserved for backward compatibility.
+    :param manager: A no-op argument, preserved for backward compatibility.
     :returns: Couchbase username.
     """
     return os.environ.get("CN_COUCHBASE_USER", "admin")
@@ -67,7 +67,7 @@ def get_couchbase_password(manager) -> str:
 
     To change the location, simply pass ``CN_COUCHBASE_PASSWORD_FILE`` environment variable.
 
-    :params manager: An instance of :class:`~jans.pycloudlib.manager._Manager`.
+    :param manager: An instance of :class:`~jans.pycloudlib.manager._Manager`.
     :returns: Plaintext password.
     """
     secret_name = "couchbase_password"
@@ -79,7 +79,7 @@ def get_couchbase_superuser(manager=None) -> str:
     """Get Couchbase username from ``CN_COUCHBASE_SUPERUSER``
     environment variable (default to empty-string).
 
-    :params manager: A no-op argument, preserved for backward compatibility.
+    :param manager: A no-op argument, preserved for backward compatibility.
     :returns: Couchbase username.
     """
     return os.environ.get("CN_COUCHBASE_SUPERUSER", "")
@@ -91,7 +91,7 @@ def get_couchbase_superuser_password(manager) -> str:
 
     To change the location, simply pass ``CN_COUCHBASE_SUPERUSER_PASSWORD_FILE`` environment variable.
 
-    :params manager: An instance of :class:`~jans.pycloudlib.manager._Manager`.
+    :param manager: An instance of :class:`~jans.pycloudlib.manager._Manager`.
     :returns: Plaintext password.
     """
     secret_name = "couchbase_superuser_password"
@@ -130,8 +130,8 @@ def get_couchbase_mappings(persistence_type: str, ldap_mapping: str) -> dict:
     - ``cache``
     - ``session``
 
-    :params persistence_type: Type of persistence.
-    :params ldap_mapping: Mapping that stored in LDAP persistence.
+    :param persistence_type: Type of persistence.
+    :param ldap_mapping: Mapping that stored in LDAP persistence.
     :returns: A map of Couchbase buckets.
     """
     mappings = prefixed_couchbase_mappings()
@@ -148,8 +148,8 @@ def get_couchbase_mappings(persistence_type: str, ldap_mapping: str) -> dict:
 def get_couchbase_conn_timeout() -> int:
     """Get connection timeout to Couchbase server.
 
-    Default connection timeout is 10000  milliseconds. To change the value, pass
-    `CN_COUCHBASE_CONN_TIMEOUT` environment variable.
+    Default connection timeout is 10000  milliseconds. To change the value,
+    pass ``CN_COUCHBASE_CONN_TIMEOUT`` environment variable.
 
     :returns: Connection timeout (in milliseconds).
     """
@@ -165,8 +165,8 @@ def get_couchbase_conn_timeout() -> int:
 def get_couchbase_conn_max_wait() -> int:
     """Get connection maximum wait time to Couchbase server.
 
-    Default time is 20000  milliseconds. To change the value, pass
-    `CN_COUCHBASE_CONN_MAX_WAIT` environment variable.
+    Default time is 20000  milliseconds. To change the value,
+    pass ``CN_COUCHBASE_CONN_MAX_WAIT`` environment variable.
 
     :returns: Connection wait time (in milliseconds).
     """
@@ -202,9 +202,9 @@ def render_couchbase_properties(manager, src: str, dest: str) -> None:
     """Render file contains properties to connect to Couchbase server,
     i.e. ``/etc/jans/conf/jans-couchbase.properties``.
 
-    :params manager: An instance of :class:`~jans.pycloudlib.manager._Manager`.
-    :params src: Absolute path to the template.
-    :params dest: Absolute path where generated file is located.
+    :param manager: An instance of :class:`~jans.pycloudlib.manager._Manager`.
+    :param src: Absolute path to the template.
+    :param dest: Absolute path where generated file is located.
     """
     persistence_type = os.environ.get("CN_PERSISTENCE_TYPE", "couchbase")
     ldap_mapping = os.environ.get("CN_PERSISTENCE_LDAP_MAPPING", "default")
@@ -272,8 +272,8 @@ def sync_couchbase_truststore(manager, dest: str = "/etc/certs/couchbase.pkcs12"
     """Pull secret contains base64-string contents of Couchbase truststore,
     and save it as a JKS file, i.e. ``/etc/certs/couchbase.pkcs12``.
 
-    :params manager: An instance of :class:`~jans.pycloudlib.manager._Manager`.
-    :params dest: Absolute path where generated file is located.
+    :param manager: An instance of :class:`~jans.pycloudlib.manager._Manager`.
+    :param dest: Absolute path where generated file is located.
     """
     cert_file = os.environ.get("CN_COUCHBASE_CERT_FILE", "/etc/certs/couchbase.crt")
     dest = dest or manager.config.get("couchbaseTrustStoreFn")
@@ -282,8 +282,14 @@ def sync_couchbase_truststore(manager, dest: str = "/etc/certs/couchbase.pkcs12"
     )
 
 
-class BaseClient:
+class BaseApiClient:
     """A base class for API client.
+
+    .. versionadded:: 1.0.0b17
+
+    .. admonition:: Notice
+
+        ``BaseApiClient`` is previously known as ``BaseClient``. It is renamed for class visibility.
     """
 
     def __init__(self, hosts, user, password):
@@ -361,8 +367,14 @@ class BaseClient:
         raise NotImplementedError
 
 
-class N1qlClient(BaseClient):
+class N1qlApiClient(BaseApiClient):
     """This class interacts with N1QL server (part of Couchbase).
+
+    .. versionadded:: 1.0.0b17
+
+    .. admonition:: Notice
+
+        ``N1qlApiClient`` is previously known as ``N1qlClient``. It is renamed for class visibility.
     """
 
     @property
@@ -376,7 +388,7 @@ class N1qlClient(BaseClient):
     def healthcheck(self, host):
         """Run healthcheck to a host.
 
-        :params host: Hostname or IP address.
+        :param host: Hostname or IP address.
         :returns: An instance of ``requests.models.Response``.
         """
         return self.session.post(
@@ -387,10 +399,10 @@ class N1qlClient(BaseClient):
         )
 
     def exec_api(self, path, **kwargs):
-        """Execute a request to REST server.
+        """Execute a request to N1QL server.
 
-        :params path: Path (or sub-URL) of API server.
-        :params kwargs: Keyword-argument passed to ``requests.api.*`` function.
+        :param path: Path (or sub-URL) of API server.
+        :param kwargs: Keyword-argument passed to ``requests.api.*`` function.
         :returns: An instance of ``requests.models.Response``.
         """
         data = kwargs.get("data", {})
@@ -412,10 +424,9 @@ def build_n1ql_request_body(query: str, *args, **kwargs) -> dict:
 
     See https://docs.couchbase.com/server/current/n1ql/n1ql-rest-api/index.html for reference.
 
-    :params query: N1QL query string.
-    :params *args: Positional parameters passed as ``args`` in request body.
-    :params **kwargs: Named parameters passed as ``$``-prefixed
-                      parameter in request body.
+    :param query: N1QL query string.
+    :param args: Positional parameters passed as ``args`` in request body.
+    :param kwargs: Named parameters passed as ``$``-prefixed parameter in request body.
     """
     body = {"statement": query}
 
@@ -428,8 +439,14 @@ def build_n1ql_request_body(query: str, *args, **kwargs) -> dict:
     return body
 
 
-class RestClient(BaseClient):
+class RestApiClient(BaseApiClient):
     """This class interacts with REST server (part of Couchbase).
+
+    .. versionadded:: 1.0.0b17
+
+    .. admonition:: Notice
+
+        ``RestApiClient`` is previously known as ``RestClient``. It is renamed for class visibility.
     """
 
     @property
@@ -443,7 +460,7 @@ class RestClient(BaseClient):
     def healthcheck(self, host):
         """Run healthcheck to a host.
 
-        :params host: Hostname or IP address.
+        :param host: Hostname or IP address.
         :returns: An instance of ``requests.models.Response``.
         """
         return self.session.get(
@@ -455,8 +472,8 @@ class RestClient(BaseClient):
     def exec_api(self, path, **kwargs):
         """Execute a request to REST server.
 
-        :params path: Path (or sub-URL) of API server.
-        :params kwargs: Keyword-argument passed to ``requests.api.*`` function.
+        :param path: Path (or sub-URL) of API server.
+        :param kwargs: Keyword-argument passed to ``requests.api.*`` function.
         :returns: An instance of ``requests.models.Response``.
         """
         data = kwargs.get("data", {})
@@ -492,10 +509,10 @@ class CouchbaseClient:
 
     @property
     def rest_client(self):
-        """An instance of :class:`~jans.pycloudlib.persistence.couchbase.RestClient`.
+        """An instance of :class:`~jans.pycloudlib.persistence.couchbase.RestApiClient`.
         """
         if not self._rest_client:
-            self._rest_client = RestClient(
+            self._rest_client = RestApiClient(
                 self.hosts, self.user, self.password,
             )
             self._rest_client.resolve_host()
@@ -505,10 +522,10 @@ class CouchbaseClient:
 
     @property
     def n1ql_client(self):
-        """An instance of :class:`~jans.pycloudlib.persistence.couchbase.N1qlClient`.
+        """An instance of :class:`~jans.pycloudlib.persistence.couchbase.N1qlApiClient`.
         """
         if not self._n1ql_client:
-            self._n1ql_client = N1qlClient(
+            self._n1ql_client = N1qlApiClient(
                 self.hosts, self.user, self.password,
             )
             self._n1ql_client.resolve_host()
@@ -526,9 +543,9 @@ class CouchbaseClient:
     def add_bucket(self, name: str, memsize: int = 100, type_: str = "couchbase"):
         """Add new bucket.
 
-        :params name: Bucket's name.
-        :params memsize: Desired memory size of the bucket.
-        :params type\\_: Bucket's type.
+        :param name: Bucket's name.
+        :param memsize: Desired memory size of the bucket.
+        :param type\\_: Bucket's type.
         :returns: An instance of ``requests.models.Response``.
         """
         return self.rest_client.exec_api(
@@ -557,7 +574,7 @@ class CouchbaseClient:
     def exec_query(self, query: str, *args, **kwargs):
         """Execute N1QL query.
 
-        :params query: N1QL query string.
+        :param query: N1QL query string.
         :returns: An instance of ``requests.models.Response``.
         """
         data = build_n1ql_request_body(query, *args, **kwargs)
@@ -591,8 +608,8 @@ def suppress_verification_warning():
 def get_couchbase_keepalive_interval():
     """Get keep-alive interval to Couchbase server.
 
-    Default keep-alive interval is 30000  milliseconds. To change the value, pass
-    `CN_COUCHBASE_KEEPALIVE_INTERVAL` environment variable.
+    Default keep-alive interval is 30000  milliseconds. To change the value,
+    pass ``CN_COUCHBASE_KEEPALIVE_INTERVAL`` environment variable.
 
     :returns: Keep-alive interval (in milliseconds).
     """
@@ -608,8 +625,8 @@ def get_couchbase_keepalive_interval():
 def get_couchbase_keepalive_timeout():
     """Get keep-alive timeout to Couchbase server.
 
-    Default keepalive timeout is 2500  milliseconds. To change the value, pass
-    `CN_COUCHBASE_KEEPALIVE_TIMEOUT` environment variable.
+    Default keepalive timeout is 2500  milliseconds. To change the value,
+    pass ``CN_COUCHBASE_KEEPALIVE_TIMEOUT`` environment variable.
 
     :returns: Keep-alive timeout (in milliseconds).
     """
@@ -620,3 +637,27 @@ def get_couchbase_keepalive_timeout():
     except ValueError:
         val = default
     return val
+
+
+class BaseClient(BaseApiClient):
+    """An alias to :class:`~jans.pycloudlib.persistence.couchbase.BaseApiClient`.
+
+    .. deprecated:: 1.0.0b17
+    """
+    pass
+
+
+class RestClient(RestApiClient):
+    """An alias to :class:`~jans.pycloudlib.persistence.couchbase.RestApiClient`.
+
+    .. deprecated:: 1.0.0b17
+    """
+    pass
+
+
+class N1qlClient(N1qlApiClient):
+    """An alias to :class:`~jans.pycloudlib.persistence.couchbase.N1qlApiClient`
+
+    .. deprecated:: 1.0.0b17
+    """
+    pass
